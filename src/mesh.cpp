@@ -3,6 +3,7 @@
 //const int mesh::WIDTH;
 //const int mesh::HEIGHT;
 //const int mesh::NUM_PARTICLES;
+int colX, colY;
 
 //--------------------------------------------------------------
 mesh::mesh(){
@@ -19,10 +20,12 @@ void mesh::setID(int identify){
 //--------------------------------------------------------------
 void mesh::setup(){
     
+    ofSetFrameRate(60);
+    
     char str[20];
     sprintf(str, "test_%02d.png", ID);
     image.loadImage(str);
-
+    
     //    image.resize(image.getWidth()/5, image.getHeight()/5);
     
     /*
@@ -77,7 +80,7 @@ void mesh::setup(){
                 myMesh.addVertex(pos);
                 myMesh.addColor(c);
                 
-//                offsets.push_back(ofVec3f(ofRandom(100000),ofRandom(100000),ofRandom(100000)));
+                //                offsets.push_back(ofVec3f(ofRandom(100000),ofRandom(100000),ofRandom(100000)));
             }
         }
     }
@@ -100,58 +103,153 @@ void mesh::setup(){
     
     glPointSize(3.0);
     
-    //    for (int n=0; n<num; n++) {
-    //        for (int m = this[n].ID + 1; m<num; m++) {
-    //
-    //            float dx = this[m].centx-this[n].centx;
-    //            float dy = this[m].centy-this[n].centy;
-    //            float d = sqrt(dx*dx + dy*dy);
-    //
-    //            if (d < this[m].radius + this[n].radius) {
-    //                if (d > abs(this[m].radius - this[n].radius)) {
-    //                    ofSetLineWidth(2);
-    //                    ofSetColor(this[m].r, this[m].g, this[m].b, this[m].a);
-    //                    ofSetLineWidth(ofRandom(1,5));
-    //                    ofLine(this[m].centx, this[m].centy, this[n].centx, this[n].centy);
-    //
-    //                }
-    //            }
-    //
-    //        }
-    //    }
+    ofColor c = image.getColor(image.width/2, image.height/2);
+    current.x = abs(c.r);
+    current.y = abs(c.g) * -1.0;
+    current.z = abs(c.b) * ID*10.0;
     
+    //    cout << "x : " << current.x << endl;
+    //    cout << "y : " << current.y << endl;
+    //    cout << "z : " << current.z << endl;
 }
 
 //--------------------------------------------------------------
 void mesh::update(){
     
-    ofVec3f mousePoint(ofGetMouseX(), ofGetMouseY(), ofGetMouseX()+ofGetMouseY());
-    points.push_back(mousePoint);
+    previous = current;
+    
+    if(flagX == false){
+        if (current.x <= -500) {
+            flagX = true;
+        }else{
+            if (abs(currentCol.r) < abs(currentCol.g) && abs(currentCol.r) < abs(currentCol.b)) {
+                current.x = floor(current.x *= .8);
+            }else{
+                current.x -= (int)(currentCol.r/10.0);
+            }
+        }
+    }else if(flagX == true){
+        if (current.x >= 500) {
+            flagX = false;
+        }else{
+            if (abs(currentCol.r) < abs(currentCol.g) && abs(currentCol.r) < abs(currentCol.b)) {
+                current.x = floor(current.x *= .8);
+            }else{
+                current.x += (int)(currentCol.r/10.0);
+            }
+        }
+    }
+    
+    
+    
+    if(flagY == false){
+        if (current.y <= -500) {
+            flagY = true;
+        }else{
+            if (abs(currentCol.g) < abs(currentCol.r) && abs(currentCol.g) < abs(currentCol.b)) {
+                current.y = floor(current.y *= .8);
+            }else{
+                current.y -= (int)(currentCol.g/10.0);
+            }
+        }
+    }else if(flagY == true){
+        if (current.y >= 500) {
+            flagY = false;
+        }else{
+            if (abs(currentCol.g) < abs(currentCol.r) && abs(currentCol.g) < abs(currentCol.b)) {
+                current.y = floor(current.y *= .8);
+            }else{
+                current.y += (int)(currentCol.g/10.0);
+            }
+        }
+    }
+    
+    
+    
+    if(flagZ == false){
+        if (current.z <= -500) {
+            flagZ = true;
+        }else{
+            if (abs(currentCol.b) < abs(currentCol.r) && abs(currentCol.b) < abs(currentCol.g)) {
+                current.z = floor(current.z *= .95);
+            }else{
+                current.z -= (int)(currentCol.b);
+            }
+        }
+    }else if(flagZ == true){
+        if (current.z >= 500) {
+            flagZ = false;
+        }else{
+            if (abs(currentCol.b) < abs(currentCol.r) && abs(currentCol.b) < abs(currentCol.g)) {
+                current.z = floor(current.z *= .95);
+            }else{
+                current.z += (int)(currentCol.b);
+            }
+        }
+    }
+    
+
+
+    points.push_back(current);
+    
+    //    while(points.size() > 1000) {
+    //        points.pop_front();
+    //    }
     
     /*
-    int numVerts = myMesh.getNumVertices();
-    for (int i=0; i<numVerts; i++) {
-        ofVec3f vert = myMesh.getVertex(i);
-        
-        float time = ofGetElapsedTimef();
-        float timeScale = 5.0;
-        float displacementScale = 0.75;
-        ofVec3f timeOffsets = offsets[i];
-        
-        vert.x += (ofSignedNoise(time*timeScale+timeOffsets.x)) * displacementScale;
-        vert.y += (ofSignedNoise(time*timeScale+timeOffsets.y)) * displacementScale;
-        vert.z += (ofSignedNoise(time*timeScale+timeOffsets.z)) * displacementScale;
-        myMesh.setVertex(i, vert);
-    }
- */
+     for (int i=0; i<numVerts; i++) {
+     ofVec3f vert = myMesh.getVertex(i);
+     
+     float time = ofGetElapsedTimef();
+     float timeScale = 5.0;
+     float displacementScale = 0.75;
+     ofVec3f timeOffsets = offsets[i];
+     
+     vert.x += (ofSignedNoise(time*timeScale+timeOffsets.x)) * displacementScale;
+     vert.y += (ofSignedNoise(time*timeScale+timeOffsets.y)) * displacementScale;
+     vert.z += (ofSignedNoise(time*timeScale+timeOffsets.z)) * displacementScale;
+     myMesh.setVertex(i, vert);
+     }
+     */
+    
+    //    cout << current << endl;
+    
 }
 
 //--------------------------------------------------------------
 void mesh::draw(float x, float y, float z){
-
-    ofSetColor(255);
+    
+    previousCol = currentCol;
+    
+    if (colY < image.height) {
+        if (colX < image.width) {
+            currentCol = image.getColor(colX, colY);
+            colX++;
+        }else{
+            colX = 0;
+            colY ++;
+        }
+    }else{
+        colX = colY = 0;
+    }
+    
+    
+    if (abs(currentCol.r-previousCol.r) > 10) {
+        currentCol.r = (currentCol.r + previousCol.r)/4.0;
+    }
+    if (abs(currentCol.g-previousCol.g) > 10) {
+        currentCol.g = (currentCol.g + previousCol.g)/4.0;
+    }
+    if (abs(currentCol.b-previousCol.b) > 10) {
+        currentCol.b = (currentCol.b + previousCol.b)/4.0;
+    }
+    
+    ofSetColor(currentCol);
+    
     ofMesh myMesh_;
     myMesh_.setMode(OF_PRIMITIVE_TRIANGLE_STRIP);
+    
+    myMesh_.clear();
     
     for(unsigned int i = 0; i < points.size(); i++){
         
@@ -175,23 +273,21 @@ void mesh::draw(float x, float y, float z){
         
         myMesh_.addVertex(ofVec3f(leftPoint.x, leftPoint.y, leftPoint.z));
         myMesh_.addVertex(ofVec3f(rightPoint.x, rightPoint.y, rightPoint.z));
+        
     }
     
     myMesh_.draw();
-
-    //    easyCam.begin();
     
+   
     //    ofPushMatrix();
     glTranslatef(x, y, z);
     ofRotateX(180);
     
     //    myVbo.draw(GL_POINTS, 0, NUM_PARTICLES);
-    
     myMesh.draw();
     
     //    ofPopMatrix();
-    //    easyCam.end();
-
+    
 }
 
 

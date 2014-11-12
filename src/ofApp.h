@@ -2,7 +2,7 @@
 
 #include "ofMain.h"
 #include "mesh.h"
-#define num 1
+#define num 2
 #define kNumTestNodes 4
 #define kNumCameras 2
 

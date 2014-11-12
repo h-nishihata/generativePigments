@@ -1,7 +1,7 @@
 #ifndef __mySketch__mesh__
 #define __mySketch__mesh__
 
-#include <ofMain.h>
+#include "ofMain.h"
 class mesh{
 public:
     
@@ -26,6 +26,14 @@ public:
     ofMesh myMesh;
     
     vector<ofVec3f> points;
+    ofVec3f previous, current;
+    
+    ofColor previousCol;
+    ofColor currentCol;
+    
+    bool flagX;
+    bool flagY;
+    bool flagZ;
     
 };
 #endif /* defined(__mySketch__mesh__) */

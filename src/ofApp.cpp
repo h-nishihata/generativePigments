@@ -3,6 +3,9 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
     
+    ofSetFrameRate(60);
+    ofSetVerticalSync(true);
+    
     camToView = 0;
     camToConfigure = 1;
     
@@ -31,7 +34,7 @@ void ofApp::update(){
 //--------------------------------------------------------------
 void ofApp::draw(){
     
-    ofBackgroundGradient(ofColor(0),  ofColor(85, 78, 68),OF_GRADIENT_LINEAR);
+    ofBackgroundGradient(ofColor(190, 150, 30),  ofColor(220, 178, 80),OF_GRADIENT_LINEAR);
     
     for (int i=0; i<kNumCameras; i++) {
         if (lookatIndex[i] >= 0) {
@@ -42,9 +45,9 @@ void ofApp::draw(){
     
     cam[camToView].begin();
     
-    ofDrawGrid(500, 10, false, false, true, false);
+    //    ofDrawGrid(500, 10, false, false, true, false);
     
-    //    ofRotateY(ofGetElapsedTimef()*5.0);
+    ofRotateY(ofGetElapsedTimef()*5.0);
     for (int s=0; s<num; s++) {
         m[s].draw(0, 0, s*500);
     }
