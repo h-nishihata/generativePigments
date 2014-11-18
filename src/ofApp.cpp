@@ -5,21 +5,40 @@ void ofApp::setup(){
     
     ofSetFrameRate(60);
     ofSetVerticalSync(true);
-    
+
+// cameras
     camToView = 0;
     camToConfigure = 1;
     
-    cam[0].setPosition(40, 40, -500);
-    cam[1].setPosition(80, 500, -200);
+    cam[0].setPosition(40, -40, -500);
+    cam[1].setPosition(0, 700, -500);
     lookatIndex[1] = kNumTestNodes-1;
+
+
+// lights
+    light[0].setPosition(1000, 50, 0);
+    light[1].setPosition(0, 500, 0);
     
+    testNodes[0].setOrientation(ofVec3f(30,0,40));
+    testNodes[1].setOrientation(ofVec3f(40,0,30));
+    
+    for (int s=0; s<kNumLights; s++) {
+        light[s].enable();
+        light[s].setSpotlight();
+        light[s].lookAt(testNodes[lookatIndex[s]]);
+        
+        light[s].setAmbientColor(ofColor(218, 165, 32, 255));
+        light[s].setDiffuseColor(ofColor(100, 100, 100));
+        light[s].setSpecularColor(ofColor(155, 100, 100));
+    }
+
+
+//  objects
     for (int s=0; s<num; s++) {
         m[s].setID(s);
         m[s].setup();
     }
-    
-    //    testNodes[1].setOrientation(ofVec3f(40,0,30));
-    
+   
 }
 
 //--------------------------------------------------------------
@@ -33,8 +52,10 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
+
+//    ofBackgroundGradient(ofColor(0, 0, 0),  ofColor(85, 78, 68),OF_GRADIENT_LINEAR);
+    ofBackground(0);
     
-    ofBackgroundGradient(ofColor(190, 150, 30),  ofColor(220, 178, 80),OF_GRADIENT_LINEAR);
     
     for (int i=0; i<kNumCameras; i++) {
         if (lookatIndex[i] >= 0) {
@@ -42,12 +63,11 @@ void ofApp::draw(){
         }
     }
     
-    
     cam[camToView].begin();
     
     //    ofDrawGrid(500, 10, false, false, true, false);
+        ofRotateY(ofGetElapsedTimef()*2.0);
     
-    ofRotateY(ofGetElapsedTimef()*5.0);
     for (int s=0; s<num; s++) {
         m[s].draw(0, 0, s*500);
     }

@@ -2,9 +2,10 @@
 
 #include "ofMain.h"
 #include "mesh.h"
-#define num 2
+#define num 1
 #define kNumTestNodes 4
 #define kNumCameras 2
+#define kNumLights 2
 
 class ofApp : public ofBaseApp{
     
@@ -29,7 +30,7 @@ public:
     
     ofNode testNodes[kNumTestNodes];
     ofCamera cam[kNumCameras];
-    ofLight light;
+    ofLight light[kNumLights];
     
     mesh m[num];
     
