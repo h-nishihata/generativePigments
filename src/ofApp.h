@@ -1,11 +1,17 @@
 #pragma once
 
 #include "ofMain.h"
-#include "mesh.h"
+#include "vbo.h"
+
+#include "ofxOsc.h"
+
 #define num 1
 #define kNumTestNodes 4
 #define kNumCameras 2
 #define kNumLights 2
+
+#define HOST "192.168.11.29"
+#define PORT 8000
 
 class ofApp : public ofBaseApp{
     
@@ -13,6 +19,8 @@ public:
     void setup();
     void update();
     void draw();
+    
+    void drawFboTest();
     
     void keyPressed(int key);
     void keyReleased(int key);
@@ -23,15 +31,27 @@ public:
     void windowResized(int w, int h);
     void dragEvent(ofDragInfo dragInfo);
     void gotMessage(ofMessage msg);
+
     
     int camToView;
-    int camToConfigure;
     int lookatIndex[kNumCameras];
+    
+    ofFbo buffer;
     
     ofNode testNodes[kNumTestNodes];
     ofCamera cam[kNumCameras];
     ofLight light[kNumLights];
     
-    mesh m[num];
+    vbo v[num];
+    
+    ofVbo particles;
+    vector<ofVec3f>points;
+    vector<ofVec3f>speeds;
+    ofVec3f agent;
+    
+    ofxOscSender sender;
+    
+//    float xAxis = ofGetElapsedTimef();
+//    float zAxis = ofGetElapsedTimef();
     
 };
