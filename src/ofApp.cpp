@@ -1,54 +1,54 @@
 #include "ofApp.h"
 
-//int initX;
-//int initY;
-bool xFlag, zFlag;
+int xAxis;
+int yAxis;
+int zAxis;
+bool xFlag, yFlag, zFlag;
+int timer;
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-    
+
     ofSetFrameRate(60);
     ofSetVerticalSync(true);
-
     ofBackground(0);
     ofEnableDepthTest();
+    
 
-    buffer.allocate(1440, 900, GL_RGBA);
+    buffer.allocate(1920, 1200, GL_RGBA);
     buffer.begin();
         ofClear(255, 255, 255, 0);
     buffer.end();
     
-    sender.setup(HOST, PORT);
+    
+// nodes
+    testNodes[0].setOrientation(ofVec3f(0,0,0));
+    testNodes[1].setOrientation(ofVec3f(1000,0,1200));
     
     
-    // nodes
-    testNodes[0].setOrientation(ofVec3f(30,0,40));
-    testNodes[1].setOrientation(ofVec3f(40,0,30));
-    
-    
-    // cameras
+// cameras
     camToView = 0;
-    
-    cam[0].setPosition(40, -40, -800);
-    cam[1].setPosition(0, 700, -500);
+    cam[0].setPosition(300, -40, -800);
+    cam[1].setPosition(-100, 200, -500);
     lookatIndex[1] = kNumTestNodes-1;
     
-    // lights
-    light[0].setPosition(1000, 50, 0);
-    light[1].setPosition(0, 500, 0);
+    
+//     lights
+    light[0].setPosition(50, 100, 50);
+    light[1].setPosition(1050, 100, 1250);
     
     for (int s=0; s<kNumLights; s++) {
         light[s].enable();
         light[s].setSpotlight();
         light[s].lookAt(testNodes[lookatIndex[s]]);
         
-        light[s].setAmbientColor(ofColor(218, 165, 32, 255));
-        light[s].setDiffuseColor(ofColor(100, 100, 100));
-        light[s].setSpecularColor(ofColor(155, 100, 100));
+        light[s].setAmbientColor(ofColor(r, g, b, 255));
+        light[s].setDiffuseColor(ofColor(r+13, g+24, b+12));
+        light[s].setSpecularColor(ofColor(255, 255, 255));
     }
+
     
-    
-    //  objects
+//  objects
     for (int s=0; s<num; s++) {
         v[s].setID(s);
         v[s].setup();
@@ -59,127 +59,238 @@ void ofApp::setup(){
 //--------------------------------------------------------------
 void ofApp::update(){
     
-//    ofVec3f initPos;
     ofEnableAlphaBlending();
     
-    ofRotateY(180);
-    ofTranslate(-500, -500, 0);
-    
-
-//    if (zFlag == false) {
-//        if (zAxis < 0.0) {
-//            zAxis *= -1;
-//            zFlag = true;
-//        }
-//    }else if (zFlag == true) {
-//        if (zAxis > 2.4) {
-//            zAxis *= -1;
-//            zFlag = false;
-//        }
-//    }
-    
-//    cam[0].move(0, 0, zAxis);
-//    cout << zAxis << endl;
-    
-    
-//    if (initY < 512) {
-//        if (initX < 512) {
-//            initPos = v[0].pix;
-//            initX++;
-//        }else{
-//            initX = 0;
-//            initY ++;
-//        }
-//    }else{
-//        initX = initY = 0;
-//    }
-    
-//    int temp = 0;
-//    if (temp < v[0].NUM_PARTICLES) {
-//        initPos = v[0].myVerts[160];
-//        temp++;
-//    }
-    
-    
-    // particles
-    if(points.size() < 500000) {
-//        for (int s=0; s<30; s++) {
-            points.push_back(ofVec3f(500,500,0));
-            speeds.push_back(ofVec3f(ofRandom(-1,1),ofRandom(-1,1),ofRandom(-1,1)));
-//        }
-    }
-
-    for (unsigned int i=0; i<points.size(); i++) {
-        
-        speeds[i].y += 0.02;
-        points[i]   += speeds[i];
-        speeds[i]   *= 0.98;
-        
-        ofVec3f mouseVec = ofVec3f(ofGetMouseX(),ofGetMouseY(),ofGetMouseX()+ofGetMouseY()) - points[i];
-        if(mouseVec.length() < 1000) {
-            mouseVec.normalize();
-            speeds[i] -= mouseVec;
+//  cameras
+    if (xFlag == false) {
+        camPosX -= xAxis;
+        if (cam[0].getX() < -1000 || cam[1].getX() < -1000) {
+            xFlag = true;
+            switch (camToView) {
+                case 0:
+                    camToView = 1;
+                    break;
+                    
+                case 1:
+                    camToView = 0;
+                    break;
+            }
         }
-        
-        float t = (2 + ofGetElapsedTimef()) * .1;
-        agent.x = ofSignedNoise(t, 0, 0);
-        agent.y = ofSignedNoise(0, t, 0);
-        agent.z = ofSignedNoise(0, 0, t);
-        agent *= 400;
-
-        
-//        if(points[i].x > ofGetWidth())    points[i].x = ofRandom(10000);
-//        if(points[i].x < 0)               points[i].x = ofRandom(10000);;
-//        if(points[i].y > ofGetHeight())   points[i].y = ofRandom(10000);;
-//        if(points[i].y < 0)               points[i].y = ofRandom(10000);;
-        
+    }else if (xFlag == true) {
+        camPosX += xAxis;
+        if (cam[0].getX() > 1000 || cam[1].getX() > 1000) {
+            xFlag = false;
+            switch (camToView) {
+                case 0:
+                    camToView = 1;
+                    break;
+                    
+                case 1:
+                    camToView = 0;
+                    break;
+            }
+        }
     }
+    
+    if (yFlag == false) {
+        camPosY -= yAxis;
+        if (cam[0].getY() < -100 || cam[1].getY() < -100) {
+            yFlag = true;
+            switch (camToView) {
+                case 0:
+                    camToView = 1;
+                    break;
+                    
+                case 1:
+                    camToView = 0;
+                    break;
+            }
+        }
+    }else if (yFlag == true) {
+        camPosY += yAxis;
+        if (cam[0].getY() > 1000 || cam[1].getY() > 1000) {
+            yFlag = false;
+            switch (camToView) {
+                case 0:
+                    camToView = 1;
+                    break;
+                    
+                case 1:
+                    camToView = 0;
+                    break;
+            }
+        }
+    }
+    
+    if (zFlag == false) {
+        camPosZ -= zAxis;
+        if (cam[0].getZ() < -1000 || cam[1].getZ() < -1000) {
+            zFlag = true;
+            switch (camToView) {
+                case 0:
+                    camToView = 1;
+                    break;
+                    
+                case 1:
+                    camToView = 0;
+                    break;
+            }
+        }
+    }else if (zFlag == true) {
+        camPosZ += zAxis;
+        if (cam[0].getZ() > 1000 || cam[1].getZ() > 1000) {
+            zFlag = false;
+            switch (camToView) {
+                case 0:
+                    camToView = 1;
+                    break;
+                    
+                case 1:
+                    camToView = 0;
+                    break;
+            }
+        }
+    }
+
+    cam[0].setPosition(camPosX, camPosY, camPosZ);
+    cam[1].setPosition(camPosX, camPosY, camPosZ);
+    
+    
+// lighting
+    if (rFlag == false) {
+        r -=0.1;
+        if (r <= 0) {
+            rFlag = true;
+        }
+    }else if (rFlag == true) {
+        r +=0.1;
+        if (r >= 198) {
+            rFlag = false;
+        }
+    }
+    
+    if (gFlag == false) {
+        g -=0.1;
+        if (g <= 0) {
+            gFlag = true;
+        }
+    }else if (gFlag == true) {
+        g +=0.1;
+        if (g >= 95) {
+            gFlag = false;
+        }
+    }
+    
+    if (bFlag == false) {
+        b -=0.1;
+        if (b <= 0) {
+            bFlag = true;
+        }
+    }else if (bFlag == true) {
+        b +=0.1;
+        if (b >= 32) {
+            bFlag = false;
+        }
+    }
+    
+    for (int s=0; s<kNumLights; s++) {
+        light[s].setAmbientColor(ofColor(r, g, b, 255));
+        light[s].setDiffuseColor(ofColor(r+13, g+24, b+12));
+        light[s].setSpecularColor(ofColor(255, 255, 255));
+    }
+
+    
+//  objects
+    for (int s=0; s<num; s++) {
+        v[s].update();
+    }
+    
+    
+// particles
+    if(points.size() < 500000) {
+            points.push_back(ofVec3f(ofRandom(0,1920),ofRandom(0,1200),ofRandom(-5000,1000)));
+            speeds.push_back(ofVec3f(ofRandom(-1,1),ofRandom(-1,1),ofRandom(-1,1)));
+    }
+    
+    //    float t = (2 + ofGetElapsedTimef()) * .1;
+    //    agent.x = ofSignedNoise(t, 0, 0);
+    //    agent.y = ofSignedNoise(0, t, 0);
+    //    agent.z = ofSignedNoise(0, 0, t);
+    //    agent *= 400;
+    
+    for (unsigned int i=0; i<points.size(); i++) {
+        speeds[i].y += ofRandom(-.04, .04);
+        points[i]   += speeds[i];
+//        speeds[i]   *= 0.98;
+        
+//        ofVec3f vec = agent - points[i];
+//        if(vec.length() < 1000) {
+//            vec.normalize();
+//            speeds[i] -= vec*100;
+//        }
+        
+        if(points[i].x > 2000)    points[i].x = -2000;
+        if(points[i].x < -2000)   points[i].x = 2000;
+        if(points[i].y > 200)     points[i].y = -10;
+        if(points[i].y < -10)     points[i].y = 200;
+        if(points[i].z > 2000)    points[i].z = -2000;
+        if(points[i].z < -2000)   points[i].z = 2000;
+    }
+
     
     buffer.begin();
         drawFboTest();
     buffer.end();
-    
+
 }
 
 //--------------------------------------------------------------
 void ofApp::drawFboTest(){
     
     ofEnableAlphaBlending();
-    if (ofGetKeyPressed('c')) {
-        ofClear(255,255,255, 0);
-    }
     
-    ofTranslate(720, 0);
+//    if(zAxis != 0){
+//        bufferClear = true;
+//    }
+//    
+//    if (bufferClear == true && bufClearTime >= 0) {
+//        bufClearTime--;
+//        if (bufClearTime <= 0){
+//            bufferClear = false;
+//            count++;
+//            bufClearTime = 50 + 2 * count;
+//        }
+//    }
+    
+    
+    if (ofGetKeyPressed('c') || bufferClear == true){
+        ofClear(255,255,255,0);
+    }
     
     for (int i=0; i<kNumCameras; i++) {
         if (lookatIndex[i] >= 0) {
             cam[i].lookAt(testNodes[lookatIndex[i]]);
         }
     }
+    
+    
     cam[camToView].begin();
-    
-            ofHideCursor();
-//            ofRotateY(ofGetElapsedTimef());
-    
-            // objects
-            for (int s=0; s<num; s++) {
-                v[s].draw(0, 0, s*500);
-            }
-    
-            ofRotateY(180);
-            ofTranslate(-500, -500, 0);
-    
-    
-            // particles
-            ofSetColor(255);
-            particles.setVertexData(&points[0], (int)points.size(), GL_DYNAMIC_DRAW);
-            particles.draw(GL_POINTS, 0, (int)points.size());
 
-//            ofSetColor(255);
-//            ofCircle(agent,10);
-    
+    ofHideCursor();
+    ofRotateX(180);
+
+// objects
+        v[0].draw(0, 0, 0);
+        v[1].draw(1000, 0, 1200);
+
+
+// particles
+    ofSetColor(255);
+    particles.setVertexData(&points[0], (int)points.size(), GL_DYNAMIC_DRAW);
+    particles.draw(GL_POINTS, 0, (int)points.size());
+
     cam[camToView].end();
-    
+
 }
 
 //--------------------------------------------------------------
@@ -188,33 +299,11 @@ void ofApp::draw(){
     ofSetColor(255, 255, 255);
     buffer.draw(0,0);
     
-    if (ofGetKeyPressed()) {
-        ofxOscMessage m;
-        m.setAddress("/key");
-        m.addFloatArg(80);
-        sender.sendMessage(m);
-    }else{
-        ofxOscMessage m;
-        m.setAddress("/key");
-        m.addFloatArg(0);
-        sender.sendMessage(m);
-    }
-    
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
-    
-    switch (key) {
-        case '0':
-            camToView = 0;
-            break;
-            
-        case '1':
-            camToView = 1;
-            break;
-    }
-    
+
 }
 
 //--------------------------------------------------------------

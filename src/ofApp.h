@@ -3,15 +3,10 @@
 #include "ofMain.h"
 #include "vbo.h"
 
-#include "ofxOsc.h"
-
-#define num 1
-#define kNumTestNodes 4
+#define num 2
+#define kNumTestNodes 2
 #define kNumCameras 2
 #define kNumLights 2
-
-#define HOST "192.168.11.29"
-#define PORT 8000
 
 class ofApp : public ofBaseApp{
     
@@ -36,6 +31,19 @@ public:
     int camToView;
     int lookatIndex[kNumCameras];
     
+    float camPosX =  30;
+    float camPosY =  0;
+    float camPosZ =  40;
+    
+    float r = 218;
+    float g = 165;
+    float b = 32;
+    bool rFlag, gFlag, bFlag;
+    
+    int count;
+    bool bufferClear;
+    int bufClearTime = 50;
+    
     ofFbo buffer;
     
     ofNode testNodes[kNumTestNodes];
@@ -48,10 +56,5 @@ public:
     vector<ofVec3f>points;
     vector<ofVec3f>speeds;
     ofVec3f agent;
-    
-    ofxOscSender sender;
-    
-//    float xAxis = ofGetElapsedTimef();
-//    float zAxis = ofGetElapsedTimef();
     
 };
