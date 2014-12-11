@@ -41,8 +41,8 @@ public:
     bool rFlag, gFlag, bFlag;
     
     int count;
-    bool bufferClear;
-    int bufClearTime = 50;
+    bool clearBuffer;
+    int bufferClearTime;
     
     ofFbo buffer;
     

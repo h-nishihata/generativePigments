@@ -9,7 +9,7 @@ int timer;
 //--------------------------------------------------------------
 void ofApp::setup(){
 
-    ofSetFrameRate(60);
+    ofSetFrameRate(24);
     ofSetVerticalSync(true);
     ofBackground(0);
     ofEnableDepthTest();
@@ -66,6 +66,8 @@ void ofApp::update(){
         camPosX -= xAxis;
         if (cam[0].getX() < -1000 || cam[1].getX() < -1000) {
             xFlag = true;
+            clearBuffer = true;
+            bufferClearTime = 100;
             switch (camToView) {
                 case 0:
                     camToView = 1;
@@ -96,6 +98,8 @@ void ofApp::update(){
         camPosY -= yAxis;
         if (cam[0].getY() < -100 || cam[1].getY() < -100) {
             yFlag = true;
+            clearBuffer = true;
+            bufferClearTime = 10;
             switch (camToView) {
                 case 0:
                     camToView = 1;
@@ -126,6 +130,8 @@ void ofApp::update(){
         camPosZ -= zAxis;
         if (cam[0].getZ() < -1000 || cam[1].getZ() < -1000) {
             zFlag = true;
+            clearBuffer = true;
+            bufferClearTime = 50;
             switch (camToView) {
                 case 0:
                     camToView = 1;
@@ -208,7 +214,7 @@ void ofApp::update(){
     
 // particles
     if(points.size() < 500000) {
-            points.push_back(ofVec3f(ofRandom(0,1920),ofRandom(0,1200),ofRandom(-5000,1000)));
+            points.push_back(ofVec3f(ofRandom(-2000,2000),ofRandom(-10,200),ofRandom(-2000,2000)));
             speeds.push_back(ofVec3f(ofRandom(-1,1),ofRandom(-1,1),ofRandom(-1,1)));
     }
     
@@ -236,7 +242,6 @@ void ofApp::update(){
         if(points[i].z > 2000)    points[i].z = -2000;
         if(points[i].z < -2000)   points[i].z = 2000;
     }
-
     
     buffer.begin();
         drawFboTest();
@@ -249,21 +254,16 @@ void ofApp::drawFboTest(){
     
     ofEnableAlphaBlending();
     
-//    if(zAxis != 0){
-//        bufferClear = true;
-//    }
-//    
-//    if (bufferClear == true && bufClearTime >= 0) {
-//        bufClearTime--;
-//        if (bufClearTime <= 0){
-//            bufferClear = false;
-//            count++;
-//            bufClearTime = 50 + 2 * count;
-//        }
-//    }
+    
+    if (clearBuffer == true && bufferClearTime >= 0) {
+        bufferClearTime--;
+        if (bufferClearTime <= 0){
+            clearBuffer = false;
+        }
+    }
     
     
-    if (ofGetKeyPressed('c') || bufferClear == true){
+    if (ofGetKeyPressed('c') || clearBuffer == true){
         ofClear(255,255,255,0);
     }
     
