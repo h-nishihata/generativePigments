@@ -15,7 +15,7 @@ void ofApp::setup(){
     ofEnableDepthTest();
     
 
-    buffer.allocate(1920, 1200, GL_RGBA);
+    buffer.allocate(1024, 900, GL_RGBA);
     buffer.begin();
         ofClear(255, 255, 255, 0);
     buffer.end();
@@ -33,9 +33,9 @@ void ofApp::setup(){
     lookatIndex[1] = kNumTestNodes-1;
     
     
-//     lights
-    light[0].setPosition(50, 100, 50);
-    light[1].setPosition(1050, 100, 1250);
+//  lights
+    light[0].setPosition(0, 30, 0);
+    light[1].setPosition(1000, 30, 1200);
     
     for (int s=0; s<kNumLights; s++) {
         light[s].enable();
@@ -165,36 +165,40 @@ void ofApp::update(){
 // lighting
     if (rFlag == false) {
         r -=0.1;
-        if (r <= 0) {
+        if (r <= 10) {
             rFlag = true;
         }
     }else if (rFlag == true) {
-        r +=0.1;
-        if (r >= 198) {
+        if (g > 80 && b < 80) {
+            r +=0.1;
+        }
+        if (r >= 255) {
             rFlag = false;
         }
     }
     
     if (gFlag == false) {
         g -=0.1;
-        if (g <= 0) {
+        if (g <= 10) {
             gFlag = true;
         }
     }else if (gFlag == true) {
         g +=0.1;
-        if (g >= 95) {
+        if (g >= 255) {
             gFlag = false;
         }
     }
     
     if (bFlag == false) {
         b -=0.1;
-        if (b <= 0) {
+        if (b <= 10) {
             bFlag = true;
         }
     }else if (bFlag == true) {
-        b +=0.1;
-        if (b >= 32) {
+        if (r < 80 && g > 80) {
+            b +=0.1;
+        }
+        if (b >= 190) {
             bFlag = false;
         }
     }
@@ -227,7 +231,7 @@ void ofApp::update(){
     for (unsigned int i=0; i<points.size(); i++) {
         speeds[i].y += ofRandom(-.04, .04);
         points[i]   += speeds[i];
-//        speeds[i]   *= 0.98;
+//      speeds[i]   *= 0.98;
         
 //        ofVec3f vec = agent - points[i];
 //        if(vec.length() < 1000) {
@@ -297,7 +301,7 @@ void ofApp::drawFboTest(){
 void ofApp::draw(){
 
     ofSetColor(255, 255, 255);
-    buffer.draw(0,0);
+    buffer.draw(208,0/*,ofGetWidth(), ofGetHeight()*/);
     
 }
 
