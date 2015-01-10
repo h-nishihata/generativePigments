@@ -28,14 +28,14 @@ void ofApp::setup(){
     
 // cameras
     camToView = 0;
-    cam[0].setPosition(300, -40, -800);
-    cam[1].setPosition(-100, 200, -500);
+    cam[0].setPosition(posX_00, posY_00, posZ_00);
+    cam[1].setPosition(posX_01, posY_01, posZ_01);
     lookatIndex[1] = kNumTestNodes-1;
     
     
 //  lights
-    light[0].setPosition(0, 30, 0);
-    light[1].setPosition(1000, 30, 1200);
+    light[0].setPosition(0, 50, 0);
+    light[1].setPosition(1000, 50, 1200);
     
     for (int s=0; s<kNumLights; s++) {
         light[s].enable();
@@ -63,94 +63,28 @@ void ofApp::update(){
     
 //  cameras
     if (xFlag == false) {
-        camPosX -= xAxis;
+        posX_00 -= xAxis;
+        posX_01 -= xAxis;
         if (cam[0].getX() < -1000 || cam[1].getX() < -1000) {
             xFlag = true;
-            clearBuffer = true;
-            bufferClearTime = 100;
             switch (camToView) {
                 case 0:
                     camToView = 1;
                     break;
-                    
                 case 1:
                     camToView = 0;
                     break;
             }
         }
     }else if (xFlag == true) {
-        camPosX += xAxis;
+        posX_00 += xAxis;
+        posX_01 += xAxis;
         if (cam[0].getX() > 1000 || cam[1].getX() > 1000) {
             xFlag = false;
             switch (camToView) {
                 case 0:
                     camToView = 1;
                     break;
-                    
-                case 1:
-                    camToView = 0;
-                    break;
-            }
-        }
-    }
-    
-    if (yFlag == false) {
-        camPosY -= yAxis;
-        if (cam[0].getY() < -100 || cam[1].getY() < -100) {
-            yFlag = true;
-            clearBuffer = true;
-            bufferClearTime = 10;
-            switch (camToView) {
-                case 0:
-                    camToView = 1;
-                    break;
-                    
-                case 1:
-                    camToView = 0;
-                    break;
-            }
-        }
-    }else if (yFlag == true) {
-        camPosY += yAxis;
-        if (cam[0].getY() > 1000 || cam[1].getY() > 1000) {
-            yFlag = false;
-            switch (camToView) {
-                case 0:
-                    camToView = 1;
-                    break;
-                    
-                case 1:
-                    camToView = 0;
-                    break;
-            }
-        }
-    }
-    
-    if (zFlag == false) {
-        camPosZ -= zAxis;
-        if (cam[0].getZ() < -1000 || cam[1].getZ() < -1000) {
-            zFlag = true;
-            clearBuffer = true;
-            bufferClearTime = 50;
-            switch (camToView) {
-                case 0:
-                    camToView = 1;
-                    break;
-                    
-                case 1:
-                    camToView = 0;
-                    break;
-            }
-        }
-    }else if (zFlag == true) {
-        camPosZ += zAxis;
-        if (cam[0].getZ() > 1000 || cam[1].getZ() > 1000) {
-            zFlag = false;
-            switch (camToView) {
-                case 0:
-                    camToView = 1;
-                    break;
-                    
                 case 1:
                     camToView = 0;
                     break;
@@ -158,8 +92,88 @@ void ofApp::update(){
         }
     }
 
-    cam[0].setPosition(camPosX, camPosY, camPosZ);
-    cam[1].setPosition(camPosX, camPosY, camPosZ);
+
+    if (yFlag == false) {
+        posY_00 -= yAxis;
+        posY_01 -= yAxis;
+        if (cam[0].getY() < -100 || cam[1].getY() < -100) {
+            yFlag = true;
+            switch (camToView) {
+                case 0:
+                    camToView = 1;
+                    break;
+                case 1:
+                    camToView = 0;
+                    break;
+            }
+        }
+    }else if (yFlag == true) {
+        posY_00 += yAxis;
+        posY_01 += yAxis;
+        if (cam[0].getY() > 1000 || cam[1].getY() > 1000) {
+            yFlag = false;
+            switch (camToView) {
+                case 0:
+                    camToView = 1;
+                    break;
+                case 1:
+                    camToView = 0;
+                    break;
+            }
+        }
+    }
+    
+    
+    if (zFlag == false) {
+        posZ_00 -= zAxis;
+        posZ_01 -= zAxis;
+        if (cam[0].getZ() < -1000 || cam[1].getZ() < -1000) {
+            zFlag = true;
+            switch (camToView) {
+                case 0:
+                    camToView = 1;
+                    break;
+                case 1:
+                    camToView = 0;
+                    break;
+            }
+        }
+    }else if (zFlag == true) {
+        posZ_00 += zAxis;
+        posZ_01 += zAxis;
+        if (cam[0].getZ() > 1000 || cam[1].getZ() > 1000) {
+            zFlag = false;
+            switch (camToView) {
+                case 0:
+                    camToView = 1;
+                    break;
+                case 1:
+                    camToView = 0;
+                    break;
+            }
+        }
+    }
+
+    
+    if (camToView == 0) {
+        if (cam[0].getX() == -100 || cam[0].getX() == 100){
+            clearBuffer = true;
+            if (clearBuffer) {
+                bufferClearTime = 50;
+            }
+        }
+
+    }else if (camToView == 1) {
+        if (cam[1].getX() == -100 || cam[1].getX() == 100){
+            clearBuffer = true;
+            if (clearBuffer) {
+                bufferClearTime = 30;
+            }
+        }
+    }
+
+    cam[0].setPosition(posX_00, posY_00, posZ_00);
+    cam[1].setPosition(posX_01, posY_01, posZ_01);
     
     
 // lighting
@@ -246,11 +260,12 @@ void ofApp::update(){
         if(points[i].z > 2000)    points[i].z = -2000;
         if(points[i].z < -2000)   points[i].z = 2000;
     }
+
     
     buffer.begin();
         drawFboTest();
     buffer.end();
-
+    
 }
 
 //--------------------------------------------------------------
@@ -259,7 +274,7 @@ void ofApp::drawFboTest(){
     ofEnableAlphaBlending();
     
     
-    if (clearBuffer == true && bufferClearTime >= 0) {
+    if (clearBuffer == true && bufferClearTime > 0) {
         bufferClearTime--;
         if (bufferClearTime <= 0){
             clearBuffer = false;
@@ -279,8 +294,7 @@ void ofApp::drawFboTest(){
     
     
     cam[camToView].begin();
-
-    ofHideCursor();
+    
     ofRotateX(180);
 
 // objects
@@ -300,6 +314,7 @@ void ofApp::drawFboTest(){
 //--------------------------------------------------------------
 void ofApp::draw(){
 
+    ofHideCursor();
     ofSetColor(255, 255, 255);
     buffer.draw(208,0/*,ofGetWidth(), ofGetHeight()*/);
     

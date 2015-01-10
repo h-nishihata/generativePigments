@@ -31,9 +31,12 @@ public:
     int camToView;
     int lookatIndex[kNumCameras];
     
-    float camPosX =  30;
-    float camPosY =  0;
-    float camPosZ =  40;
+    float posX_00 =  300;
+    float posY_00 =  -40;
+    float posZ_00 =  -800;
+    float posX_01 =  -100;
+    float posY_01 =  200;
+    float posZ_01 =  -500;
     
     float r = 218;
     float g = 165;
