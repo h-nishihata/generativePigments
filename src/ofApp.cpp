@@ -11,7 +11,7 @@ void ofApp::setup(){
 
     ofSetFrameRate(24);
     ofSetVerticalSync(true);
-    ofBackground(0);
+    ofBackground(255);
     ofEnableDepthTest();
     
 
@@ -308,14 +308,17 @@ void ofApp::drawFboTest(){
     particles.draw(GL_POINTS, 0, (int)points.size());
 
     cam[camToView].end();
-
+    
+//    ofSetColor(0);
+//    ofRect(400, 0, 100, ofGetHeight());
+    
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
 
     ofHideCursor();
-    ofSetColor(255, 255, 255);
+    ofSetColor(255);
     buffer.draw(208,0/*,ofGetWidth(), ofGetHeight()*/);
     
 }
