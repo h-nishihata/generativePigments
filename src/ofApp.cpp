@@ -11,11 +11,11 @@ void ofApp::setup(){
 
     ofSetFrameRate(24);
     ofSetVerticalSync(true);
-    ofBackground(255);
+    ofBackground(0);
     ofEnableDepthTest();
     
 
-    buffer.allocate(1024, 900, GL_RGBA);
+    buffer.allocate(1920, 2160, GL_RGBA);
     buffer.begin();
         ofClear(255, 255, 255, 0);
     buffer.end();
@@ -309,8 +309,56 @@ void ofApp::drawFboTest(){
 
     cam[camToView].end();
     
-//    ofSetColor(0);
-//    ofRect(400, 0, 100, ofGetHeight());
+    
+// masks
+    ofSetColor(255,0,0);
+    // hinge
+    ofBeginShape();
+        ofVertex(1070, 0);
+        ofVertex(1090, 0);
+        ofVertex(1090, buffer.getHeight());
+        ofVertex(1070, buffer.getHeight());
+    ofEndShape();
+    
+    // upper left
+    ofBeginShape();
+        ofVertex(0, 0);
+        ofVertex(1080, 0);
+        ofVertex(1080, 20);
+        ofVertex(0, 20);
+    ofEndShape();
+    
+    // upper right
+    ofBeginShape();
+        ofVertex(1080, 0);
+        ofVertex(buffer.getWidth(), 0);
+        ofVertex(buffer.getWidth(), 20);
+        ofVertex(1080, 20);
+    ofEndShape();
+    
+    // left edge
+    ofBeginShape();
+        ofVertex(0, 0);
+        ofVertex(50, 0);
+        ofVertex(50, buffer.getHeight());
+        ofVertex(0, buffer.getHeight());
+    ofEndShape();
+    
+    // right edge
+    ofBeginShape();
+        ofVertex(buffer.getWidth()-50, 0);
+        ofVertex(buffer.getWidth(), 0);
+        ofVertex(buffer.getWidth(), buffer.getHeight());
+        ofVertex(buffer.getWidth()-50, buffer.getHeight());
+    ofEndShape();
+    
+    // bottom
+    ofBeginShape();
+        ofVertex(0, buffer.getHeight()-50);
+        ofVertex(buffer.getWidth(), buffer.getHeight()-50);
+        ofVertex(buffer.getWidth(), buffer.getHeight());
+        ofVertex(0, buffer.getHeight());
+    ofEndShape();
     
 }
 
@@ -318,9 +366,13 @@ void ofApp::drawFboTest(){
 void ofApp::draw(){
 
     ofHideCursor();
-    ofSetColor(255);
-    buffer.draw(208,0/*,ofGetWidth(), ofGetHeight()*/);
     
+    ofTranslate(1920, 0);
+    ofRotate(90);
+    
+    ofSetColor(255);
+    buffer.draw(-1000,500);
+
 }
 
 //--------------------------------------------------------------

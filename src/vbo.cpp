@@ -138,7 +138,7 @@ void vbo::update(){
         }
     }
     
-    if (timer < 1000) {
+    if (timer < 3000) {
         timer++;
     }else{
         timer = 0;
