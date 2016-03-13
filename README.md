@@ -1,2 +1,2 @@
-nihonga_hack
+generative_pigments
 ============
