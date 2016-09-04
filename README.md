@@ -1,2 +1,2 @@
-generative_pigments
+generativePigments
 ============
